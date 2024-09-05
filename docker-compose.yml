@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  rabbitmq1:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq1
+    container_name: rabbitmq1
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=MY_SECRET_COOKIE
+      - RABBITMQ_NODENAME=rabbit@rabbitmq1
+    volumes:
+      - rabbitmq1-data:/var/lib/rabbitmq
+    networks:
+      rabbitmq-cluster:
+        aliases:
+          - rabbitmq1
+    ports:
+      - "15672:15672"  # Porta de gerenciamento do nó 1
+      - "5672:5672"    # Porta AMQP do nó 1
+    restart: unless-stopped
+
+  rabbitmq2:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq2
+    container_name: rabbitmq2
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=MY_SECRET_COOKIE
+      - RABBITMQ_NODENAME=rabbit@rabbitmq2
+    volumes:
+      - rabbitmq2-data:/var/lib/rabbitmq
+    networks:
+      rabbitmq-cluster:
+        aliases:
+          - rabbitmq2
+    restart: unless-stopped
+
+  rabbitmq3:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq3
+    container_name: rabbitmq3
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=MY_SECRET_COOKIE
+      - RABBITMQ_NODENAME=rabbit@rabbitmq3
+    volumes:
+      - rabbitmq3-data:/var/lib/rabbitmq
+    networks:
+      rabbitmq-cluster:
+        aliases:
+          - rabbitmq3
+    restart: unless-stopped
+
+networks:
+  rabbitmq-cluster:
+    driver: bridge
+
+volumes:
+  rabbitmq1-data:
+  rabbitmq2-data:
+  rabbitmq3-data:
